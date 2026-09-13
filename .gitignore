@@ -1,0 +1,24 @@
+venv/
+__pycache__/
+*.pdf
+*.png
+*.html
+todo-cli/
+fastapi-project/
+git-test/
+git--test/
+Postman/
+Postman Agent/
+3D Objects/
+AppData/
+Contacts/
+Documents/
+Downloads/
+Favorites/
+Music/
+OneDrive/
+Videos/
+NTUSER*
+ntuser*
+Saved Games/
+Searches/
