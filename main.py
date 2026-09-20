@@ -5,20 +5,20 @@ from passlib.context import CryptContext
 from jose import jwt, JWTError
 from datetime import datetime, timedelta
 from pydantic import BaseModel, Field
-from dotenv import load_dotenv
-import os
+
 
 from database import engine, get_db, Base
 import models
 
-load_dotenv()
+
 
 # Tables create karo database mein (agar exist nahi karte)
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
-SECRET_KEY = os.getenv("SECRET_KEY")
+from config import settings
+SECRET_KEY = settings.secret_key
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60
 
