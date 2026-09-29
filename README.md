@@ -1,3 +1,4 @@
+🔗 **Live API:** https://notes-api-5cfd.onrender.com/docs
 # Notes API
 
 A REST API built with FastAPI featuring JWT authentication.
