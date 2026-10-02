@@ -32,6 +32,8 @@ class UserSignup(BaseModel):
 class NoteSchema(BaseModel):
     title: str = Field(min_length=1, max_length=100)
     content: str
+class CommentSchema(BaseModel):
+    content: str = Field(min_length=1, max_length=500)
 
 def create_access_token(data: dict):
     to_encode = data.copy()
@@ -123,6 +125,24 @@ def delete_note(note_id: int, current_user: models.User = Depends(get_current_us
     db.commit()
     return {"message": "Note deleted"}
 
+@app.post("/notes/{note_id}/comments")
+def add_comment(note_id: int, comment: CommentSchema, current_user: models.User = Depends(get_current_user), db: Session = Depends(get_db)):
+    note = db.query(models.Note).filter(models.Note.id == note_id).first()
+    if not note:
+        raise HTTPException(status_code=404, detail="Note not found")
+    new_comment = models.Comment(content=comment.content, note_id=note_id, author_id=current_user.id)
+    db.add(new_comment)
+    db.commit()
+    db.refresh(new_comment)
+    return {"message": "Comment added", "comment": {"id": new_comment.id, "content": new_comment.content}}
+
+@app.get("/notes/{note_id}/comments")
+def get_comments(note_id: int, current_user: models.User = Depends(get_current_user), db: Session = Depends(get_db)):
+    note = db.query(models.Note).filter(models.Note.id == note_id).first()
+    if not note:
+        raise HTTPException(status_code=404, detail="Note not found")
+    comments = db.query(models.Comment).filter(models.Comment.note_id == note_id).all()
+    return {"comments": comments}
 @app.get("/")
 def read_root():
     return {"message": "Notes API with PostgreSQL is running!"}

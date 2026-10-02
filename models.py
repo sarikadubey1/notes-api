@@ -10,6 +10,7 @@ class User(Base):
     hashed_password = Column(String(255), nullable=False)
 
     notes = relationship("Note", back_populates="owner")
+    comments = relationship("Comment", back_populates="author")
 
 class Note(Base):
     __tablename__ = "notes"
@@ -20,3 +21,15 @@ class Note(Base):
     owner_id = Column(Integer, ForeignKey("users.id"))
 
     owner = relationship("User", back_populates="notes")
+    comments = relationship("Comment", back_populates="note", cascade="all, delete-orphan")
+
+class Comment(Base):
+    __tablename__ = "comments"
+
+    id = Column(Integer, primary_key=True, index=True)
+    content = Column(String(500), nullable=False)
+    note_id = Column(Integer, ForeignKey("notes.id"))
+    author_id = Column(Integer, ForeignKey("users.id"))
+
+    note = relationship("Note", back_populates="comments")
+    author = relationship("User", back_populates="comments")

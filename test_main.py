@@ -26,3 +26,15 @@ def test_create_and_get_note(client, login_as):
     response = client.get("/notes", headers=headers)
     assert response.status_code == 200
     assert len(response.json()["notes"]) == 1
+    
+def test_add_and_get_comment(client, login_as):
+    headers = login_as("sarika")
+    created = client.post("/notes", json={"title": "Note", "content": "x"}, headers=headers)
+    note_id = created.json()["note"]["id"]
+
+    response = client.post(f"/notes/{note_id}/comments", json={"content": "Nice note!"}, headers=headers)
+    assert response.status_code == 200
+
+    response = client.get(f"/notes/{note_id}/comments", headers=headers)
+    assert response.status_code == 200
+    assert len(response.json()["comments"]) == 1
